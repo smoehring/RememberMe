@@ -1,0 +1,19 @@
+﻿@page "/Contacts/{Uuid:guid}"
+@if (_currentEntry is null)
+{
+    <MudAlert Severity="Severity.Error">Oops, the Entry you're trying to edit could not be found</MudAlert>
+    <MudButton Variant="Variant.Text" OnClick="@(() => GoBack())">Go Back</MudButton>
+} else {
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="@(() => GoBack())"></MudIconButton>
+    <MudStack>
+        <MudField Label="UUID">@_currentEntry.Uuid.ToString("N")</MudField>
+        <MudTextField Label="Name" @bind-Value="_currentEntry.Name"/>
+        <MudTextField Label="Address" @bind-Value="_currentEntry.ContactAdress"/>
+        <MudTextField Label="Last Contact" T="DateTime" Format="s" InputType="InputType.DateTimeLocal" @bind-Value="_currentEntry.LastContact"/>
+        <MudItem Class="d-flex justify-end flex-grow-1 gap-4">
+            <MudButton ButtonType="ButtonType.Button" Color="@Color.Primary" OnClick="@(() => SaveContact())">Save</MudButton>
+            <MudButton ButtonType="ButtonType.Button" Color="@Color.Warning" OnClick="@(() => DeleteContact())" Disabled="@(!ConfigDataContext.Config.Contacts.Any(entry => entry.Uuid.Equals(_currentEntry.Uuid)))">Delete</MudButton>
+            <MudButton ButtonType="ButtonType.Button" Color="@Color.Secondary" OnClick="@(() => GoBack())">Cancel</MudButton>
+        </MudItem>
+    </MudStack>
+}

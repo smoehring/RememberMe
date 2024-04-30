@@ -1,6 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RememberMe.Ui.Forms", "RememberMe.Ui.Forms\RememberMe.Ui.Forms.csproj", "{D29E7A8E-527B-40BD-A5A3-705334901616}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RememberMe.Ui.WPF", "RememberMe.Ui.WPF\RememberMe.Ui.WPF.csproj", "{C839E802-5BFE-48AA-998C-9FE689E54D15}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D29E7A8E-527B-40BD-A5A3-705334901616}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D29E7A8E-527B-40BD-A5A3-705334901616}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D29E7A8E-527B-40BD-A5A3-705334901616}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D29E7A8E-527B-40BD-A5A3-705334901616}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C839E802-5BFE-48AA-998C-9FE689E54D15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C839E802-5BFE-48AA-998C-9FE689E54D15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C839E802-5BFE-48AA-998C-9FE689E54D15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C839E802-5BFE-48AA-998C-9FE689E54D15}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BC1E9269-1230-471A-8628-2C99904DD821}
 	EndGlobalSection
 EndGlobal

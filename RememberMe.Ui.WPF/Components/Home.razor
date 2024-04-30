@@ -1,0 +1,50 @@
+﻿@page "/"
+<MudText Typo="Typo.h2">Hello @Environment.UserName!</MudText>
+<MudText Typo="Typo.body1">There are <b>@(_displayData.Count(entry => entry.LastContact.Add(ConfigDataContext.Config.DueTimeSpan) < DateTime.Now))</b> Contacts that deserve your attention.</MudText>
+
+@if (_displayData.Any())
+{
+<MudSimpleTable Striped="true">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Contact</th>
+        <th>Last Contact</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var contact in _displayData.Where(entry => entry.LastContact.Add(ConfigDataContext.Config.DueTimeSpan) < DateTime.Now))
+    {
+    <tr>
+        <td>@contact.Name</td>
+        <td>@contact.ContactAdress</td>
+        <td>@contact.LastContact.ToString("G")</td>
+        <td><button type="button" class="btn btn-primary">Set as Contacted</button>
+            <button type="button" class="btn btn-secondary">Open Profile</button></td>
+    </tr>
+    }
+    </tbody>
+</MudSimpleTable>
+}
+
+<MudDivider Class="my-2" />
+
+<MudText Typo="Typo.h4">The next Contact due:</MudText>
+@if (_nextDueEntry is not null)
+{
+<MudCard Outlined="true">
+    <MudCardContent >
+        <MudText Typo="Typo.h5">@_nextDueEntry.Name</MudText>
+        <MudText Typo="Typo.body2">In @((_nextDueEntry.LastContact.Add(ConfigDataContext.Config.DueTimeSpan) - DateTime.Now).Days) Days</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Variant="Variant.Text">Set as Contacted</MudButton>
+        <MudButton Variant="Variant.Text">Open Profile</MudButton>
+    </MudCardActions>
+</MudCard>
+}
+else
+{
+<p>You have no Contacts.</p>
+}

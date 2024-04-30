@@ -1,0 +1,7 @@
+﻿@using RememberMe.Ui.WPF.SharedComponents
+<Router AppAssembly="@typeof(MainLayout).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+</Router>

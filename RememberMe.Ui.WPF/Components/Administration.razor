@@ -1,0 +1,15 @@
+﻿@page "/Administration"
+<h3>Administration</h3>
+
+<MudStack>
+    <MudPaper Elevation="1">
+        
+    </MudPaper>
+    <MudPaper Elevation="1">
+        <MudText Typo="Typo.h6">Debug Options</MudText>
+        <MudButton Variant="Variant.Text" OnClick="@(() => _debugExpanded = !_debugExpanded)">@(_debugExpanded ? "Hide" : "Show")</MudButton>
+        <MudCollapse Expanded="_debugExpanded">
+            <MudButton OnClick="SendToast">Send Toast</MudButton>
+        </MudCollapse>
+    </MudPaper>
+</MudStack>
