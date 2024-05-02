@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
-using RememberMe.Ui.WPF.Services;
-using Snoval.Dev.RememberMe.Ui.Forms.Models;
+using MudBlazor;
+using Snoval.Dev.RememberMe.Ui.WPF.Models;
+using Snoval.Dev.RememberMe.Ui.WPF.Services;
 
-namespace RememberMe.Ui.WPF.Components;
+namespace Snoval.Dev.RememberMe.Ui.WPF.Components;
 
 public partial class ContactsEdit : ComponentBase
 {
@@ -10,6 +11,7 @@ public partial class ContactsEdit : ComponentBase
     [Parameter] public Guid Uuid { get; set; }
     [Inject] public required ConfigDataContext ConfigDataContext { get; set; }
     [Inject] public required NavigationManager NavigationManager { get; set; }
+    [Inject] public required ISnackbar Snackbar { get; set; }
     
     protected override void OnInitialized()
     {
@@ -27,6 +29,7 @@ public partial class ContactsEdit : ComponentBase
         }
         ConfigDataContext.Write();
         ConfigDataContext.Load();
+        Snackbar.Add("Contact saved", Severity.Success);
         NavigationManager.NavigateTo($"/Contacts/{_currentEntry.Uuid}");
     }
 

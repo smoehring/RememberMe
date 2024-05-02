@@ -1,4 +1,5 @@
 ﻿@page "/Contacts/{Uuid:guid}"
+@using Snoval.Dev.RememberMe.Ui.WPF.Models
 @if (_currentEntry is null)
 {
     <MudAlert Severity="Severity.Error">Oops, the Entry you're trying to edit could not be found</MudAlert>
@@ -8,7 +9,14 @@
     <MudStack>
         <MudField Label="UUID">@_currentEntry.Uuid.ToString("N")</MudField>
         <MudTextField Label="Name" @bind-Value="_currentEntry.Name"/>
-        <MudTextField Label="Address" @bind-Value="_currentEntry.ContactAdress"/>
+        <MudTextField Label="Address" @bind-Value="_currentEntry.ContactAddress"/>
+        <MudRadioGroup @bind-Value="_currentEntry.AddressType">
+            <MudRadio Value="@AddressType.Generic">@AddressType.Generic.ToFriendlyString()</MudRadio>
+            <MudRadio Value="@AddressType.Telegram">@AddressType.Telegram.ToFriendlyString()</MudRadio>
+            <MudRadio Value="@AddressType.EMail">@AddressType.EMail.ToFriendlyString()</MudRadio>
+            <MudRadio Value="@AddressType.Discord">@AddressType.Discord.ToFriendlyString()</MudRadio>
+        </MudRadioGroup>
+        <MudText Typo="Typo.body2">Link will open as <a href="@_currentEntry.ContactAddress.ToSocialMediaLink(_currentEntry.AddressType)" target="_blank">@_currentEntry.ContactAddress.ToSocialMediaLink(_currentEntry.AddressType)</a></MudText>
         <MudTextField Label="Last Contact" T="DateTime" Format="s" InputType="InputType.DateTimeLocal" @bind-Value="_currentEntry.LastContact"/>
         <MudItem Class="d-flex justify-end flex-grow-1 gap-4">
             <MudButton ButtonType="ButtonType.Button" Color="@Color.Primary" OnClick="@(() => SaveContact())">Save</MudButton>

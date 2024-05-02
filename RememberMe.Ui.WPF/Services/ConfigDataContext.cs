@@ -1,31 +1,40 @@
 ﻿using System.IO;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Snoval.Dev.RememberMe.Ui.Forms.Models;
+using Snoval.Dev.RememberMe.Ui.WPF.Models;
 
-namespace RememberMe.Ui.WPF.Services;
+namespace Snoval.Dev.RememberMe.Ui.WPF.Services;
 
-public class ConfigDataContext(ILogger<ConfigDataContext> logger)
+public class ConfigDataContext(ILogger<ConfigDataContext> logger, IConfiguration configuration)
 {
-    private readonly ILogger<ConfigDataContext> _logger = logger;
-    private const string _appName = "snoval.dev.rememberme";
-    private const string _configFileName = "config.json";
-    public string AppdataFolder => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), _appName);
-    public string ConfigFilePath => Path.Combine(AppdataFolder, _configFileName);
-
-    public ConfigModel Config { get; set; } = new ConfigModel();
+    private const string AppName = "snoval.dev.rememberme";
+    private string? _configFileName = "config.json";
+    private string? _appdataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppName);
+    public string ConfigFilePath => Path.Combine(_appdataFolder, _configFileName);
+    
+    public ConfigModel Config { get; set; } = new();
 
     private void CheckPrerequisite()
     {
-        if (string.IsNullOrWhiteSpace(AppdataFolder) || AppdataFolder.Equals(_appName))
+        _appdataFolder = configuration["Files:ConfigFilePath"];
+        if (string.IsNullOrWhiteSpace(_appdataFolder))
         {
-            logger.LogCritical("AppData Folder could not be found");
-            throw new Exception("AppData Folder could not be found");
+           _appdataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppName);
+           logger.LogWarning("ConfigFilePath not set, using default path '{path}'", _appdataFolder);
         }
-        if (!Directory.Exists(AppdataFolder))
+        
+        _configFileName = configuration["Files:ConfigFileName"];
+        if (string.IsNullOrWhiteSpace(_configFileName))
         {
-            logger.LogWarning("Create Appfolder at '{path}'", AppdataFolder);
-            Directory.CreateDirectory(AppdataFolder);
+            _configFileName = "config.json";
+            logger.LogWarning("ConfigFileName not set, using default name '{name}'", _configFileName);
+        }
+        
+        if (!Directory.Exists(_appdataFolder))
+        {
+            logger.LogWarning("Create Appfolder at '{path}'", _appdataFolder);
+            Directory.CreateDirectory(_appdataFolder);
         }
 
         if (!File.Exists(ConfigFilePath))
@@ -66,7 +75,7 @@ public class ConfigDataContext(ILogger<ConfigDataContext> logger)
         var contact = Config.Contacts.FirstOrDefault(c => c.Uuid == uuid);
         if (contact == null)
         {
-            _logger.LogError("Trying to update LastContact of non-existing Contact Guid {guid}", uuid);
+            logger.LogError("Trying to update LastContact of non-existing Contact Guid {guid}", uuid);
             return;
         }
         contact.LastContact = DateTime.Now;

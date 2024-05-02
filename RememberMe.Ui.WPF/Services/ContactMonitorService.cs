@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace RememberMe.Ui.WPF.Services;
+namespace Snoval.Dev.RememberMe.Ui.WPF.Services;
 
 public class ContactMonitorService(ILogger<ContactMonitorService> logger, NotificationManager notificationManager, ConfigDataContext configDataContext)
 {
@@ -9,10 +9,10 @@ public class ContactMonitorService(ILogger<ContactMonitorService> logger, Notifi
 
     public async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _timer = new PeriodicTimer(configDataContext.Config.CheckInterval);
+        _timer = new PeriodicTimer(TimeSpan.FromSeconds(configDataContext.Config.CheckInterval));
         configDataContext.Load();
         // Sending summary notification of all expired contacts
-        var expiredContacts = configDataContext.Config.Contacts.Where(c => c.LastContact.Add(configDataContext.Config.DueTimeSpan) < DateTime.Now).ToList();
+        var expiredContacts = configDataContext.Config.Contacts.Where(c => c.LastContact.AddSeconds(configDataContext.Config.DueTimeSpan) < DateTime.Now).ToList();
         if (expiredContacts.Count != 0)
         {
             notificationManager.SendSummary(expiredContacts); ;
@@ -24,7 +24,7 @@ public class ContactMonitorService(ILogger<ContactMonitorService> logger, Notifi
         do
         {
             // Check if previous expired Contracts are now resolved
-            var resolvedContacts = configDataContext.Config.Contacts.Where(entry => _contactsNotified.Contains(entry.Uuid) && entry.LastContact.Add(configDataContext.Config.DueTimeSpan) > DateTime.Now).ToList();
+            var resolvedContacts = configDataContext.Config.Contacts.Where(entry => _contactsNotified.Contains(entry.Uuid) && entry.LastContact.AddSeconds(configDataContext.Config.DueTimeSpan) > DateTime.Now).ToList();
             if (resolvedContacts.Count != 0)
             {
                 logger.LogDebug("Removing {count} contacts from the list of notified contacts", resolvedContacts.Count);
@@ -32,7 +32,7 @@ public class ContactMonitorService(ILogger<ContactMonitorService> logger, Notifi
             }
             
             // Check for new expired contacts
-            var newExpiredContacts = configDataContext.Config.Contacts.Where(c => !_contactsNotified.Contains(c.Uuid) && c.LastContact.Add(configDataContext.Config.DueTimeSpan) < DateTime.Now).ToList();
+            var newExpiredContacts = configDataContext.Config.Contacts.Where(c => !_contactsNotified.Contains(c.Uuid) && c.LastContact.AddSeconds(configDataContext.Config.DueTimeSpan) < DateTime.Now).ToList();
             if (newExpiredContacts.Count != 0)
             {
                 foreach (var contact in newExpiredContacts)

@@ -1,15 +1,13 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Toolkit.Uwp.Notifications;
 using MudBlazor.Services;
-using RememberMe.Ui.WPF.Services;
 using Serilog;
+using Snoval.Dev.RememberMe.Ui.WPF.Services;
+using Application = System.Windows.Application;
 
-namespace RememberMe.Ui.WPF;
+namespace Snoval.Dev.RememberMe.Ui.WPF;
 
 /// <summary>
 /// Interaction logic for App.xaml

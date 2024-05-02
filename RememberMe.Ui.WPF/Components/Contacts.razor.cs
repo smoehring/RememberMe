@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using RememberMe.Ui.WPF.Services;
-using Snoval.Dev.RememberMe.Ui.Forms.Models;
+using Snoval.Dev.RememberMe.Ui.WPF.Models;
+using Snoval.Dev.RememberMe.Ui.WPF.Services;
 
-namespace RememberMe.Ui.WPF.Components;
+namespace Snoval.Dev.RememberMe.Ui.WPF.Components;
 
 public partial class Contacts : ComponentBase
 {
@@ -27,7 +27,7 @@ public partial class Contacts : ComponentBase
             return true;
         if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (element.ContactAdress.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.ContactAddress.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
         return false;
     }
@@ -40,5 +40,15 @@ public partial class Contacts : ComponentBase
     private void AddContact()
     {
         NavigationManager.NavigateTo($"/Contacts/{Guid.Empty}");
+    }
+
+    private string GetDiscordIcon()
+    {
+        return System.Text.Encoding.Default.GetString(Resources.discord_mark_blue);
+    }
+    
+    private string GetTelegramIcon()
+    {
+        return System.Text.Encoding.Default.GetString(Resources.telegram_logo);
     }
 }

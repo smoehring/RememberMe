@@ -1,21 +1,30 @@
 ﻿using Microsoft.AspNetCore.Components;
-using RememberMe.Ui.WPF.Services;
-using Snoval.Dev.RememberMe.Ui.Forms.Models;
+using Microsoft.Extensions.Configuration;
+using Snoval.Dev.RememberMe.Ui.WPF.Models;
+using Snoval.Dev.RememberMe.Ui.WPF.Services;
 
-namespace RememberMe.Ui.WPF.Components;
+namespace Snoval.Dev.RememberMe.Ui.WPF.Components;
 
 public partial class Home : ComponentBase
 {
-    private IReadOnlyList<ContactEntry> _displayData;
-
-    private ContactEntry? _nextDueEntry => _displayData.Where(entry =>
-        entry.LastContact.Add(ConfigDataContext.Config.DueTimeSpan) > DateTime.Now).MinBy(entry => entry.LastContact);
-
+    [Inject] public required NavigationManager NavigationManager { get; set; }
     [Inject] public required ConfigDataContext ConfigDataContext { get; set; }
+    [Inject] public required IConfiguration Configuration { get; set; }
+
+    private ContactEntry? NextDueEntry => DisplayData.Where(entry =>
+        entry.LastContact.AddSeconds(ConfigDataContext.Config.DueTimeSpan) > DateTime.Now).MinBy(entry => entry.LastContact);
+
+    private IEnumerable<ContactEntry> DisplayData => ConfigDataContext.Config.Contacts;
 
     protected override void OnInitialized()
     {
+        var con = Configuration;
         ConfigDataContext.Load();
-        _displayData = ConfigDataContext.Config.Contacts;
+    }
+
+    private void SetAsContacted(Guid uuid)
+    {
+        ConfigDataContext.UpdateLastContact(uuid);
+        StateHasChanged();
     }
 }

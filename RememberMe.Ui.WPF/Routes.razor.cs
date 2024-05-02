@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace RememberMe.Ui.WPF;
+namespace Snoval.Dev.RememberMe.Ui.WPF;
 
 public partial class Routes : ComponentBase
 {

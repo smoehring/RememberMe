@@ -1,4 +1,14 @@
-﻿
+﻿#splashscreen {
+    display: grid;
+    height: 100%;
+}
+
+.centerSplash {
+    max-width: 100%;
+    max-height: 100vh;
+    margin: auto;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
