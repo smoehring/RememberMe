@@ -1,0 +1,31 @@
+﻿@page "/Contacts"
+@using Snoval.Dev.RememberMe.Ui.WPF.Models
+
+
+<MudTable T="ContactEntry" Items="@_displayData" Hover="true" SortLabel="Sort By" Filter="new Func<ContactEntry, bool>(FilterFunc1)" RowClass="cursor-pointer" OnRowClick="RowClick">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Contacts</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudSpacer />
+        <MudButton ButtonType="ButtonType.Button" Variant="Variant.Outlined" Color="@Color.Primary" OnClick="@(() => AddContact())">Add</MudButton>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh></MudTh>
+        <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<ContactEntry, object>(x => x.Name)">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<ContactEntry, object>(x => x.ContactAddress)">Address</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<ContactEntry, object>(x => x.LastContact)">Last Contact</MudTableSortLabel></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd><MudIcon Icon="@context.AddressType.GetIcon()" /></MudTd>
+        <MudTd DataLabel="Name"><MudHighlighter Text="@context.Name" HighlightedText="_searchString"/></MudTd>
+        <MudTd DataLabel="Address"><MudHighlighter Text="@context.ContactAddress" HighlightedText="_searchString"/></MudTd>
+        <MudTd DataLabel="LastContact">@context.LastContact</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+    <NoRecordsContent>
+        <MudText Typo="Typo.h6">No Contacts yet, lets add some!</MudText>
+    </NoRecordsContent>
+</MudTable>

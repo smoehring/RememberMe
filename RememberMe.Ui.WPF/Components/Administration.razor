@@ -1,0 +1,33 @@
+﻿@page "/Administration"
+<h3>Administration</h3>
+
+<MudStack>
+    <MudPaper Elevation="1" Class="pa-3">
+        <EditForm EditContext="_editContext" OnValidSubmit="Save">
+            <MudSwitch Color="@Color.Primary" @bind-Value="_model.OpenMinimized" Label="Open Minimized" />
+            <MudSwitch Color="@Color.Primary" @bind-Value="_model.MinimizeToTray" Label="Minimize to Tray" />
+            <MudNumericField @bind-Value="_model.CheckInterval" Min="1" Max="int.MaxValue" Label="Check Interval" HelperText="Requires Restart of Application to be effective" AdornmentText="seconds" Adornment="Adornment.End" />
+            <MudNumericField @bind-Value="_model.DueTimeSpan" Label="Due after last Contact" AdornmentText="seconds" Adornment="Adornment.End" />
+            <MudItem Class="d-flex justify-end flex-grow-1 gap-4">
+                <MudButton Variant="Variant.Outlined" ButtonType="ButtonType.Submit" Color="@Color.Primary" Class="my-3">Save</MudButton>
+            </MudItem>
+        </EditForm>
+    </MudPaper>
+    <MudPaper Elevation="1" Class="pa-3">
+        <MudText Typo="Typo.h6">Debug Options</MudText>
+        <MudButton Variant="Variant.Text" OnClick="@(() => _debugExpanded = !_debugExpanded)">@(_debugExpanded ? "Hide" : "Show")</MudButton>
+        <MudCollapse Expanded="_debugExpanded">
+            <MudGrid>
+                <MudItem md="9" sm="12">
+                    <MudTextField @bind-Value="_debugUserId" Label="User Id for Toast" Clearable="true" HelperText="Will send Summary if Field is empty"></MudTextField>
+                </MudItem>
+                <MudItem md="3" sm="12">
+                    <MudButton OnClick="SendToast">Send Toast</MudButton>
+                </MudItem>
+            </MudGrid>
+            <MudDivider Class="my-3"/>
+            <MudField Class="mb-3" Label="App Settings" HelperText="This File contains startup Configuration for this Application (e.G. Logging, Paths)">@($"{Configuration["contentRoot"]}/appsettings.json")</MudField>
+            <MudField Class="mb-3" Label="Config Path" HelperText="This File contains the saved information of this Application (e.G. Contacts, Options)">@(ConfigDataContext.ConfigFilePath)</MudField>
+        </MudCollapse>
+    </MudPaper>
+</MudStack>
