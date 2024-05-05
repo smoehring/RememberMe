@@ -1,15 +1,17 @@
 ﻿namespace Snoval.Dev.RememberMe.Ui.WPF.Models;
 
-public class ContactEntry
+public class ContactTimespan
 {
     public Guid Uuid { get; set; } = Guid.NewGuid();
     public string Name { get; set; } = string.Empty;
-    public string ContactAddress { get; set; } = string.Empty;
-    public DateTime LastContact { get; set; } = DateTime.Now;
-    public AddressType AddressType { get; set; }
-    public Guid TimespanUuid { get; set; } = Guid.Empty;
+    public int Timespan { get; set; } = 1;
+    
+    public override string ToString()
+    {
+        return Name;
+    }
 
-    protected bool Equals(ContactEntry other)
+    protected bool Equals(ContactTimespan other)
     {
         return Uuid.Equals(other.Uuid);
     }
@@ -19,7 +21,7 @@ public class ContactEntry
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;
         if (obj.GetType() != this.GetType()) return false;
-        return Equals((ContactEntry)obj);
+        return Equals((ContactTimespan)obj);
     }
 
     public override int GetHashCode()

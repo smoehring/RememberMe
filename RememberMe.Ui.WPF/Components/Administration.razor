@@ -1,15 +1,47 @@
 ﻿@page "/Administration"
+@using Snoval.Dev.RememberMe.Ui.WPF.Models
 <h3>Administration</h3>
 
 <MudStack>
     <MudPaper Elevation="1" Class="pa-3">
-        <EditForm EditContext="_editContext" OnValidSubmit="Save">
+        <EditForm EditContext="_editContext" OnValidSubmit="Save" Context="editFormContext">
             <MudSwitch Color="@Color.Primary" @bind-Value="_model.OpenMinimized" Label="Open Minimized" />
             <MudSwitch Color="@Color.Primary" @bind-Value="_model.MinimizeToTray" Label="Minimize to Tray" />
             <MudNumericField @bind-Value="_model.CheckInterval" Min="1" Max="int.MaxValue" Label="Check Interval" HelperText="Requires Restart of Application to be effective" AdornmentText="seconds" Adornment="Adornment.End" />
-            <MudNumericField @bind-Value="_model.DueTimeSpan" Label="Due after last Contact" AdornmentText="seconds" Adornment="Adornment.End" />
+            
+            <MudTable T="ContactTimespan" Items="_model.Timespans" Class="mt-3">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Timespans</MudText>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh>Id</MudTh>
+                    <MudTh>Name</MudTh>
+                    <MudTh>Timespan (in Sec.)</MudTh>
+                    <MudTh></MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>@context.Uuid.ToString("N")[..7]</MudTd>
+                    <MudTd><MudTextField @bind-Value="context.Name" /></MudTd>
+                    <MudTd><MudNumericField @bind-Value="context.Timespan" Min="1" Max="int.MaxValue" /></MudTd>
+                    <MudTd>
+                        @if (_model.Contacts.Any(entry => entry.TimespanUuid.Equals(context.Uuid)))
+                        {
+                            <span>@($"{_model.Contacts.Count(entry => entry.TimespanUuid.Equals(context.Uuid))} linked Contacts")</span>
+                        }
+                        else
+                        {
+                            <MudButton Variant="Variant.Text" Color="@Color.Error" OnClick="@(() => _model.Timespans.Remove(context))">Delete</MudButton>    
+                        }
+                    </MudTd>
+                </RowTemplate>
+                <FooterContent>
+                    <MudTd Rowspan="4">
+                        <MudButton ButtonType="ButtonType.Button" Color="@Color.Primary" OnClick="AddTimespan">Add</MudButton>
+                    </MudTd>
+                </FooterContent>
+            </MudTable>
             <MudItem Class="d-flex justify-end flex-grow-1 gap-4">
-                <MudButton Variant="Variant.Outlined" ButtonType="ButtonType.Submit" Color="@Color.Primary" Class="my-3">Save</MudButton>
+                <MudButton Variant="Variant.Filled" Size="Size.Large" ButtonType="ButtonType.Submit" Color="@Color.Primary" Class="my-3">Save</MudButton>
             </MudItem>
         </EditForm>
     </MudPaper>

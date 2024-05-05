@@ -1,8 +1,8 @@
 ﻿@page "/"
 <MudText Typo="Typo.h2">Hello @Environment.UserName!</MudText>
-<MudText Typo="Typo.body1">There are <b>@(DisplayData.Count(entry => entry.LastContact.AddSeconds(ConfigDataContext.Config.DueTimeSpan) < DateTime.Now))</b> Contacts that deserve your attention.</MudText>
+<MudText Typo="Typo.body1">There are <b>@(DisplayData.Count(entry => entry.TimespanUuid != Guid.Empty && entry.LastContact.AddSeconds(ConfigDataContext.Config.Timespans.First(timespan => timespan.Uuid.Equals(entry.TimespanUuid)).Timespan) < DateTime.Now))</b> Contacts that deserve your attention.</MudText>
 
-@if (DisplayData.Any(entry => entry.LastContact.AddSeconds(ConfigDataContext.Config.DueTimeSpan) < DateTime.Now))
+@if (DisplayData.Any(entry => entry.TimespanUuid != Guid.Empty && entry.LastContact.AddSeconds(ConfigDataContext.Config.Timespans.First(timespan => timespan.Uuid.Equals(entry.TimespanUuid)).Timespan) < DateTime.Now))
 {
     <MudSimpleTable Striped="true">
         <thead>
@@ -15,7 +15,7 @@
         </tr>
         </thead>
         <tbody>
-        @foreach (var contact in DisplayData.Where(entry => entry.LastContact.AddSeconds(ConfigDataContext.Config.DueTimeSpan) < DateTime.Now))
+        @foreach (var contact in DisplayData.Where(entry => entry.TimespanUuid != Guid.Empty && entry.LastContact.AddSeconds(ConfigDataContext.Config.Timespans.First(timespan => timespan.Uuid.Equals(entry.TimespanUuid)).Timespan) < DateTime.Now))
         {
             <tr>
                 <td><MudIcon Icon="@contact.AddressType.GetIcon()"></MudIcon></td>
@@ -44,7 +44,7 @@
     <MudCard Outlined="true">
         <MudCardContent >
             <MudText Typo="Typo.h5"><MudIcon Icon="@NextDueEntry.AddressType.GetIcon()" /> @NextDueEntry.Name</MudText>
-            <MudText Typo="Typo.body2">In @((NextDueEntry.LastContact.AddSeconds(ConfigDataContext.Config.DueTimeSpan) - DateTime.Now).Days) Days</MudText>
+            <MudText Typo="Typo.body2">In @((NextDueEntry.LastContact.AddSeconds(ConfigDataContext.Config.Timespans.First(timespan => timespan.Uuid.Equals(NextDueEntry.TimespanUuid)).Timespan) - DateTime.Now).Days) Days</MudText>
             <MudText Typo="Typo.body2">
                 <a href="@NextDueEntry.ContactAddress.ToSocialMediaLink(NextDueEntry.AddressType)">@NextDueEntry.ContactAddress.ToSocialMediaLink(NextDueEntry.AddressType)</a>
             </MudText>
@@ -57,5 +57,5 @@
 }
 else
 {
-    <p>You have no Contacts.</p>
+    <p>You have no Contacts with a Due-Time</p>
 }

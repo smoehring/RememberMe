@@ -29,14 +29,8 @@ public partial class Administration : ComponentBase
     {
         _model = ConfigDataContext.Config;
         _editContext = new EditContext(_model);
-        // _editContext.OnFieldChanged += EditContext_OnFieldChanged;
     }
-
-    // private void EditContext_OnFieldChanged(object? sender, FieldChangedEventArgs e)
-    // {
-    //     ConfigDataContext.Write();
-    // }
-
+    
     private void SendToast()
     {
         if (Guid.TryParse(_debugUserId, out var guid) && ConfigDataContext.Config.Contacts.Any(entry => entry.Uuid.Equals(guid)))
@@ -44,7 +38,8 @@ public partial class Administration : ComponentBase
             NotificationManager.SendDueNotification(ConfigDataContext.Config.Contacts.First(entry => entry.Uuid.Equals(guid)));
             return;
         }
-        NotificationManager.SendSummary(ConfigDataContext.Config.Contacts.Where(c => c.LastContact.AddSeconds(ConfigDataContext.Config.DueTimeSpan) < DateTime.Now).ToList());
+        NotificationManager.SendSummary(ConfigDataContext.Config.Contacts.Where(c => c.TimespanUuid != Guid.Empty 
+            &&  c.LastContact.AddSeconds(ConfigDataContext.Config.Timespans.First(timespan => timespan.Uuid.Equals(c.TimespanUuid)).Timespan) < DateTime.Now).ToList());
     }
 
     private void Save()
@@ -52,5 +47,11 @@ public partial class Administration : ComponentBase
         ConfigDataContext.Write();
         BlazorWpfCommunicationService.ChangeNotifyIconVisibilityState?.Invoke(_model.MinimizeToTray);
         Snackbar.Add("Settings saved", Severity.Success);
+    }
+
+    private void AddTimespan()
+    {
+        _model.Timespans.Add(new ContactTimespan());
+        StateHasChanged();
     }
 }

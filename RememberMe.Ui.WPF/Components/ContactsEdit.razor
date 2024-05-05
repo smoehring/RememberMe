@@ -18,6 +18,13 @@
         </MudRadioGroup>
         <MudText Typo="Typo.body2">Link will open as <a href="@_currentEntry.ContactAddress.ToSocialMediaLink(_currentEntry.AddressType)" target="_blank">@_currentEntry.ContactAddress.ToSocialMediaLink(_currentEntry.AddressType)</a></MudText>
         <MudTextField Label="Last Contact" T="DateTime" Format="s" InputType="InputType.DateTimeLocal" @bind-Value="_currentEntry.LastContact"/>
+        <MudSelect T="Guid" Label="Timespan" @bind-Value="_currentEntry.TimespanUuid">
+            <MudSelectItem Value="Guid.Empty">Never</MudSelectItem>
+            @foreach (var timespan in ConfigDataContext.Config.Timespans)
+            {
+                <MudSelectItem Value="@timespan.Uuid">@timespan.Name</MudSelectItem>
+            }
+        </MudSelect>
         <MudItem Class="d-flex justify-end flex-grow-1 gap-4">
             <MudButton ButtonType="ButtonType.Button" Color="@Color.Primary" OnClick="@(() => SaveContact())">Save</MudButton>
             <MudButton ButtonType="ButtonType.Button" Color="@Color.Warning" OnClick="@(() => DeleteContact())" Disabled="@(!ConfigDataContext.Config.Contacts.Any(entry => entry.Uuid.Equals(_currentEntry.Uuid)))">Delete</MudButton>

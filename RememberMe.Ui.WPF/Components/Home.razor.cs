@@ -11,8 +11,8 @@ public partial class Home : ComponentBase
     [Inject] public required ConfigDataContext ConfigDataContext { get; set; }
     [Inject] public required IConfiguration Configuration { get; set; }
 
-    private ContactEntry? NextDueEntry => DisplayData.Where(entry =>
-        entry.LastContact.AddSeconds(ConfigDataContext.Config.DueTimeSpan) > DateTime.Now).MinBy(entry => entry.LastContact);
+    private ContactEntry? NextDueEntry => DisplayData.Where(entry => entry.TimespanUuid != Guid.Empty && 
+                                                                     entry.LastContact.AddSeconds(ConfigDataContext.Config.Timespans.First(timespan => timespan.Uuid.Equals(entry.TimespanUuid)).Timespan) > DateTime.Now).MinBy(entry => entry.LastContact);
 
     private IEnumerable<ContactEntry> DisplayData => ConfigDataContext.Config.Contacts;
 

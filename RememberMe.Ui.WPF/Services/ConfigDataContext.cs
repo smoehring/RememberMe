@@ -1,7 +1,8 @@
 ﻿using System.IO;
+using System.Text.Json;
+using System.Xml;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Snoval.Dev.RememberMe.Ui.WPF.Models;
 
 namespace Snoval.Dev.RememberMe.Ui.WPF.Services;
@@ -11,6 +12,8 @@ public class ConfigDataContext(ILogger<ConfigDataContext> logger, IConfiguration
     private const string AppName = "snoval.dev.rememberme";
     private string? _configFileName = "config.json";
     private string? _appdataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppName);
+    private JsonSerializerOptions _jsonOptions = new() {WriteIndented = false, IgnoreNullValues = true, AllowTrailingCommas = true, PropertyNameCaseInsensitive = true};
+    
     public string ConfigFilePath => Path.Combine(_appdataFolder, _configFileName);
     
     public ConfigModel Config { get; set; } = new();
@@ -36,11 +39,11 @@ public class ConfigDataContext(ILogger<ConfigDataContext> logger, IConfiguration
             logger.LogWarning("Create Appfolder at '{path}'", _appdataFolder);
             Directory.CreateDirectory(_appdataFolder);
         }
-
+        
         if (!File.Exists(ConfigFilePath))
         {
             logger.LogWarning("Create Config File at '{path}'", ConfigFilePath);
-            var configString = JsonConvert.SerializeObject(Config, Formatting.None);
+            var configString = JsonSerializer.Serialize(Config, _jsonOptions);
             File.WriteAllText(ConfigFilePath, configString);
         }
     }
@@ -53,7 +56,7 @@ public class ConfigDataContext(ILogger<ConfigDataContext> logger, IConfiguration
         CheckPrerequisite();
         logger.LogInformation("Read Config File at '{path}'", ConfigFilePath);
         var configString = File.ReadAllText(ConfigFilePath);
-        Config = JsonConvert.DeserializeObject<ConfigModel>(configString);
+        Config = JsonSerializer.Deserialize<ConfigModel>(configString);
     }
 
     /// Write the Config File
@@ -61,7 +64,7 @@ public class ConfigDataContext(ILogger<ConfigDataContext> logger, IConfiguration
     {
         CheckPrerequisite();
         logger.LogInformation("Write Config File at '{path}'", ConfigFilePath);
-        var configString = JsonConvert.SerializeObject(Config, Formatting.None);
+        var configString = JsonSerializer.Serialize(Config, _jsonOptions);
         File.WriteAllText(ConfigFilePath, configString);
     }
 
